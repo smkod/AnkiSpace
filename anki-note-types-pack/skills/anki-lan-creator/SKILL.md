@@ -25,7 +25,7 @@ Creates 3-card vocabulary notes (`Reconocimiento`, `translation-to-word`, `Produ
 | `word` | Target word; typed in `Production` (`{{type:word}}`) and auto-matched in examples. | Base word only (no articles/punctuation) so JS word-boundary highlighting and typing work cleanly. |
 | `trans_word` | Spanish translation(s) shown in *Spanish Support*. | Concise, natural Spanish equivalents (e.g., `"aliviar / mitigar"`). |
 | `rom` | Optional IPA or pronunciation guide. | IPA (e.g., `/rɪˈzɪliənt/`) or syllable guide, or `""`. |
-| `audio` | Audio on *Recognition*, *Listening* front, and backs. | `[sound:...]` or `{{tts ...}}` if available; else `""` (or plain `word` only for batch HyperTTS generation). |
+| `audio` | Audio on *Recognition*, *Listening* front, and backs. | `[sound:...]` generated via **`ttsi`** using **random voices** (omit `--voice` / `"voice"` so `ttsi` picks varied voices across cards). |
 | `image` | Optional illustrative image on back header. | `""` unless an image tag/file is explicitly provided. |
 | `menomics` | Optional mnemonic in *Memory Aid* (exact spelling: `menomics`). | Short, vivid sound/visual/root mnemonic if helpful; else `""`. |
 | `definition` | Target-language definition on *Production* front & backs. | Concise HTML (`<b>`, `<i>`) definition **WITHOUT revealing `word`**. |
@@ -43,6 +43,12 @@ Creates 3-card vocabulary notes (`Reconocimiento`, `translation-to-word`, `Produ
 - **Exact field spelling**: `menomics` (not `mnemonics`).
 - **No Markdown**: Use HTML (`<b>`, `<i>`, `<u>`) only.
 
+## Audio Workflow (`ttsi`)
+
+- **Always use `ttsi`** to generate `.mp3` audio files for `audio`, and store them in Anki via AnkiConnect `storeMediaFile` as `[sound:<filename>.mp3]`.
+- **Use random voices (never pin a single voice)**: Omit `--voice` / `"voice"` in `ttsi generate` or `ttsi batch` manifests so `ttsi` selects varied voices across cards for natural listening diversity.
+- **Batch generation**: For multiple cards, write a JSON manifest (`{"items":[{"id":"...","text":"...","language":"pt-BR"}]}`), run `ttsi batch manifest.json --jobs 2 --json`, read `item["data"]["file"]` for each successful item, and upload to Anki.
+
 ## Example
 
 ```json
@@ -52,7 +58,7 @@ Creates 3-card vocabulary notes (`Reconocimiento`, `translation-to-word`, `Produ
     "word": "resilient",
     "trans_word": "resiliente / resistente",
     "rom": "/rɪˈzɪliənt/",
-    "audio": "",
+    "audio": "[sound:en_resilient.mp3]",
     "image": "",
     "menomics": "Re- (back) + salire (jump): bouncing back fast.",
     "definition": "Able to <b>recover quickly</b> from difficulties or setbacks.",
